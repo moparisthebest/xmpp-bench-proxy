@@ -1,0 +1,19 @@
+[package]
+name = "xmpp-bench-proxy"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = "0.4"
+env_logger = { version = "0.9", features = [] }
+tokio = "1.9"
+anyhow = "1.0.71"
+xmpp-proxy = { git = "https://github.com/moparisthebest/xmpp-proxy", default-features = false, features = ["c2s-outgoing", "websocket", "logging", "tls-ca-roots-native"] }
+webpki = "0.22"
+http = "0.2.8"
+toml = "0.5"
+serde_derive = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+rustls = "0.20.2"

@@ -1,0 +1,30 @@
+
+# local IP and port to listen to regular non-encrypted TCP XMPP on
+listen = "127.0.0.1:5222"
+
+# IP and port TLS websocket to connect to on each incoming connection
+target = "1.1.1.1:5281"
+
+# server name for SNI
+server_name = "example.org"
+
+# websocket origin header, if not set uses server_name
+# origin = "example.org"
+
+# complete websocket URI
+uri = "wss://example.org/xmpp-websocket"
+
+# limit incoming stanzas to this many bytes, default to ejabberd's default
+# https://github.com/processone/ejabberd/blob/master/ejabberd.yml.example#L32
+# xmpp-proxy will use this many bytes + 16k per connection
+# max_stanza_size_bytes = 262_144
+
+# configure logging, defaults are commented
+# can also set env variables XMPP_PROXY_LOG_LEVEL and/or XMPP_PROXY_LOG_STYLE, but values in this file override them
+# many options, trace is XML-console-level, refer to: https://docs.rs/env_logger/0.8.3/env_logger/#enabling-logging
+#log_level = "info"
+# for development/debugging:
+#log_level = "info,xmpp_proxy=trace"
+
+# one of auto, always, never, refer to: https://docs.rs/env_logger/0.8.3/env_logger/#disabling-colors
+#log_style = "never"
