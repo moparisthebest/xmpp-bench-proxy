@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!DOCTYPE tsung SYSTEM "/home/nniclaus/share/tsung/tsung-1.0.dtd" [] >
+<tsung loglevel="notice" dumptraffic="false" version="1.0">
+
+  <clients>
+    <client host="localhost" weight="2" maxusers="2000" use_controller_vm="true">
+    </client>
+  </clients>
+
+<servers>
+  <server host="192.168.1.1" port="5222" type="tcp"></server>
+</servers>
+
+<load>
+  <arrivalphase phase="1" duration="1" unit="hour">
+    <users  arrivalrate="1000" unit="second"></users>
+  </arrivalphase>
+  </load>
+
+<options>
+  <option type="ts_jabber" name="domain" value="example.org"></option>
+
+  <!-- If we want to use the automatic username/password generation:-->
+
+  <option type="ts_jabber" name="userid_max" value="10000"></option>
+  <option type="ts_jabber" name="username" value="user"></option>
+  <option type="ts_jabber" name="passwd" value="pass"></option>
+
+  <!-- Here we are using username /password from CSV files-->
+
+  <!--
+  <option type="ts_jabber" name="userid_max" value="0" />
+  <option type="ts_jabber" name="random_from_fileid" value='userdb'/>
+  <option type="ts_jabber" name="offline_from_fileid" value='userdb'/>
+  <option type="ts_jabber" name="fileid_delimiter" value=","/>
+
+  <option name="file_server" id="userdb" value="/home/nniclaus/.tsung/usernames.csv"/>
+  -->
+
+</options>
+
+<sessions>
+ <session bidi="true" probability="100" name="jabber-example" type="ts_jabber">
+
+     <!--
+   <setdynvars sourcetype="file" fileid="userdb" delimiter="," order="iter">
+     <var name="username"/>
+     <var name="password"/>
+   </setdynvars>
+     -->
+
+   <!-- first connect: we need to set username /password here if using values from CSV
+   <request subst="true"><jabber type="connect" ack="local"><xmpp_authenticate username="%%_username%%" passwd="%%_password%%"/></jabber></request>
+-->
+                <thinktime value="2"></thinktime>
+                <request> <jabber type="connect" ack="local" /> </request>
+
+                <thinktime value="2"></thinktime>
+    
+    <!--
+    <transaction name="authenticate">
+      <request> <jabber type="auth_get" ack="local"></jabber> </request>
+      <request> <jabber type="auth_set_plain" ack="local"></jabber> </request>
+    </transaction>
+
+    -->
+   <transaction name="authenticate">
+     <request> <jabber type="auth_sasl" ack="local"></jabber></request>
+     <request> <jabber type="connect" ack="local"></jabber> </request>
+     <request> <jabber type="auth_sasl_bind" ack="local" ></jabber></request>
+     <request> <jabber type="auth_sasl_session" ack="local" ></jabber></request>
+   </transaction>
+
+    <transaction name="roster_get">
+       <request>  <jabber type="iq:roster:get" ack="local"/> </request>
+   </transaction>
+
+
+   <request> <jabber type="presence:initial" ack="no_ack"/> </request>
+
+   <!-- Whitespace ping each 60 seconds mimic common client behaviour
+and prevent connection to be closed by intermediates-->
+   <for from="1" to="28" incr="1" var="counter">
+       <request> <jabber type="raw" ack="no_ack" data="
+"/></request>
+       <thinktime value="60" random="false"/>
+   </for>
+
+   <for from="1" to="30" incr="1" var="counter">
+       <request> <jabber type="raw" ack="no_ack" data="
+"/></request>
+       <thinktime value="60" random="false"/>
+   </for>
+
+
+  <transaction name="close">
+     <request> <jabber type="close" ack="no_ack"/> </request>
+   </transaction>
+
+  </session>
+</sessions>
+</tsung>
