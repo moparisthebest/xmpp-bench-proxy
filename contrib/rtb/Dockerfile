@@ -1,6 +1,6 @@
 
 # build some things
-FROM docker.io/library/debian:latest AS build
+FROM docker.io/library/debian:11 AS build
 
 RUN apt-get update && apt-get -y install gcc g++ make libexpat1-dev libyaml-dev \
     libssl-dev zlib1g-dev gnuplot-nox erlang-nox erlang-dev git && \
@@ -10,7 +10,7 @@ RUN apt-get update && apt-get -y install gcc g++ make libexpat1-dev libyaml-dev 
     cd /build/ && su -m -s /bin/bash nobody -c make && \
     find -type d -name .git -print0 | xargs -0 rm -rf && cp rtb.yml.xmpp.example rtb.yml
 
-FROM docker.io/library/debian:latest
+FROM docker.io/library/debian:11
 
 RUN apt-get update && apt-get -y install gnuplot-nox erlang-nox libyaml-0-2 && rm -rf /var/lib/apt/lists
 
